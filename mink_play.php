@@ -9,14 +9,14 @@
 require __DIR__.'/vendor/autoload.php';
 
 use Behat\Mink\Driver\GoutteDriver;
+use Behat\Mink\Driver\Selenium2Driver;
 
-$driver = new GoutteDriver();
+$driver = new Selenium2Driver('firefox');
 $session = new \Behat\Mink\Session($driver);
 
 $session->start();
 $session->visit('http://jurassicpark.wikia.com');
 
-echo "Status code: ".$session->getStatusCode()."\n\n";
 echo "Current URL: ".$session->getCurrentUrl()."\n\n";
 
 $page = $session->getPage();
@@ -28,10 +28,9 @@ $element = $page->find('css', '.subnav-2 li a');
 echo "The link text is: ".$element->getText()."\n\n";
 echo sprintf("The URL is '%s'\n\n", $element->getAttribute('href'));
 
-//$selectorHandler = $session->getSelectorsHandler();
-//$element = $page->find('named', array('link', $selectorHandler->xpathLiteral('MinkExtension')));
-
 $element = $page->findLink('Random page');
 $element->click();
 
 echo "Page URL after click: ".$session->getCurrentUrl()."\n\n";
+
+$session->stop();
