@@ -16,4 +16,8 @@ Feature: Search
     | Velociraptor       | an enlarged sickle-shaped claw |
     | Tyrannosaurus Bill | Search results                 |
 
-
+  @javascript
+  Scenario: Searching for a page with autocompletion
+    When I fill in the search box with "Tyran"
+    And I wait for the suggestions box to appear
+    Then I should see "Tyrannosaurus"

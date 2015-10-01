@@ -66,4 +66,12 @@ class FeatureContext extends MinkContext
     {
         $this->getPage()->findButton('searchButton')->press();
     }
+
+    /**
+     * @Given /^I wait for the suggestions box to appear$/
+     */
+    public function iWaitForTheSuggestionsBoxToAppear()
+    {
+        $this->getSession()->wait(5000, "$('.suggestions-results').children().length > 0");
+    }
 }
