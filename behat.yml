@@ -1,6 +1,18 @@
 default:
+
+  context:
+    parameters:
+      foo: bar
+      important_things: [one, two, apple]
+
+  extensions:
+      Behat\MinkExtension\Extension:
+        goutte: ~
+        selenium2: ~
+        base_url: http://en.wikipedia.org/
+
+pl:
+
   extensions:
     Behat\MinkExtension\Extension:
-      goutte:    ~
-      selenium2: ~
-      base_url: http://en.wikipedia.org/
+      base_url: http://pl.wikipedia.org/

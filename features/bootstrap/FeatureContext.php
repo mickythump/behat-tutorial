@@ -6,6 +6,7 @@ use Behat\Behat\Context\ClosuredContextInterface,
     Behat\Behat\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
+use Behat\MinkExtension\Context\MinkContext;
 
 //
 // Require 3rd-party libraries here:
@@ -17,70 +18,52 @@ use Behat\Gherkin\Node\PyStringNode,
 /**
  * Features context.
  */
-class FeatureContext extends BehatContext
+class FeatureContext extends MinkContext
 {
     /**
      * Initializes context.
      * Every scenario gets it's own context object.
      *
-     * @param   array   $parameters     context parameters (set them up through behat.yml)
+     * @param   array $parameters context parameters (set them up through behat.yml)
      */
+
+    private $fooConfig;
+
     public function __construct(array $parameters)
     {
-
+        $this->fooConfig = $parameters['foo'];
     }
 
     /**
      * @BeforeScenario
      */
-    public function moveIntoTestDir()
+    public function beforeScenario()
     {
-        mkdir('test');
-        chdir('test');
+        var_dump($this->getMinkParameter('base_url'));
     }
 
     /**
-     * @AfterScenario
+     * @return \Behat\Mink\Element\DocumentElement
      */
-    public function moveOutOfTestDir()
+    protected function getPage()
     {
-        chdir('..');
-        if(is_dir('test')){
-            system(' rm -r '.realpath('test'));
-        }
+        return $this->getSession()->getPage();
     }
 
     /**
-     * @Given /^I have a file named "([^"]*)"$/
+     * @When /^I fill in the search box with "([^"]*)"$/
      */
-    public function iHaveAFileNamed($file)
+    public function iFillInTheSearchBoxWith($searchTerm)
     {
-        touch($file);
+        $ele = $this->getPage()->findField('search');
+        $ele->setValue($searchTerm);
     }
 
     /**
-     * @Given /^I have a dir named "([^"]*)"$/
+     * @Given /^I press search button$/
      */
-    public function iHaveADirNamed($dir)
+    public function iPressSearchButton()
     {
-        touch($dir);
-    }
-
-    /**
-     * @When /^I run "([^"]*)"$/
-     */
-    public function iRun($command)
-    {
-        exec($command, $this->output);
-    }
-
-    /**
-     * @Then /^I should see "([^"]*)" in the output$/
-     */
-    public function iShouldSeeInTheOutput($string)
-    {
-        if (array_search($string, $this->output) === false) {
-            throw new \Exception(sprintf('Did not see "%s" in the output', $string));
-        }
+        $this->getPage()->findButton('searchButton')->press();
     }
 }
